@@ -115,9 +115,9 @@ class top_up(Resource):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
         if user:
-            user.account_balance = Integer(user.account_balance)
+            user.account_balance = int(user.account_balance)
             user.account_balance = user.account_balance + data['ammount']
-            user.account_balance = string(user.account_balance)
+            user.account_balance = str(user.account_balance)
             try:
                 return {
                       'status': True,
@@ -260,15 +260,15 @@ class buy_product(Resource):
         store = Store.find_by_name(data['store_name'])
         inventory = Inventory.find_by_name(data['store_name'])
         if product:
-            user.account_balance = Integer(user.account_balance)
+            user.account_balance = int(user.account_balance)
             user.account_balance = user.account_balance - Product.price
-            store.account_balance = Integer(store.account_balance)
+            store.account_balance = int(store.account_balance)
             store.account_balance = store.account_balance + Product.price
 
             inventory.NO_of_products = inventory.NO_of_products - 1
 
-            store.account_balance = string(store.account_balance)
-            user.account_balance = string(user.account_balance)
+            store.account_balance = str(store.account_balance)
+            user.account_balance = str(user.account_balance)
 
             return{
                  "status": True,
@@ -359,7 +359,7 @@ class update_products(Resource):
 
         inventory = Inventory.find_by_name(data['store_name'])
         product = Product.find_by_name(data['Product_name'])
-        if product.user_id == inventory.id:
+        if product:
             return{
                  "status": False,
                  'message':'product is already in your inventory'
