@@ -107,7 +107,7 @@ class top_up(Resource):
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('ammount',
-                        type=int,
+                        type=float,
                         required=True,
                         help="This field cannot be left blank!"
                         )
@@ -173,9 +173,8 @@ class delete_from_wishlist(Resource):
     def post(self):
         data = delete_from_wishlist.parser.parse_args()
         product = Wishlist.find_by_name(data['Product_name'])
-        user = User.find_by_username(data['username'])
         if product:
-            Wishlist.save_to_db(Product)
+            Wishlist.save_to_db(product)
             return{
                  "status": True,
                  'message':'product removed from wishlist'
@@ -224,7 +223,6 @@ class delete_from_cart(Resource):
     def post(self):
         data = delete_from_cart.parser.parse_args()
         product = Cart.find_by_name(data['Product_name'])
-        user = User.find_by_username(data['username'])
         if product:
             Cart.save_to_db(Product)
             return{
