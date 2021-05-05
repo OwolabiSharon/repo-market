@@ -151,7 +151,7 @@ class add_to_wishlist(Resource):
         user = User.find_by_username(data['username'])
         wishlist_item = Product.find_by_name(data['Product_name'])
         if wishlist_item:
-            wishlist = Wishlist(data['Product_name'],wishlist_item.price,user.id)
+            wishlist = Wishlist(data['Product_name'],wishlist_item.cost,user.id)
             Wishlist.save_to_db(wishlist)
             return{
                  "status": True,
@@ -202,7 +202,7 @@ class add_to_cart(Resource):
         product = Product.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
         if product:
-            cart = Cart(data['Product_name'],product.price,user.id)
+            cart = Cart(data['Product_name'],product.cost,user.id)
             Cart.save_to_db(cart)
             return{
                  "status": True,
