@@ -115,7 +115,7 @@ class top_up(Resource):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
         if user:
-            user.account_balance = int(user.account_balance)
+            user.account_balance = float(user.account_balance)
             user.account_balance = user.account_balance + data['ammount']
             user.account_balance = str(user.account_balance)
             try:
@@ -148,7 +148,7 @@ class add_to_wishlist(Resource):
                         )
     def post(self):
         data = add_to_wishlist.parser.parse_args()
-        Product = Product.find_by_name(data['Product_name'])
+        product = Product.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
         if product:
             wishlist = Wishlist(data['Product_name'],product.price,user.id)
@@ -172,7 +172,7 @@ class delete_from_wishlist(Resource):
                         )
     def post(self):
         data = delete_from_wishlist.parser.parse_args()
-        Product = Wishlist.find_by_name(data['Product_name'])
+        product = Wishlist.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
         if product:
             Wishlist.save_to_db(Product)
@@ -200,7 +200,7 @@ class add_to_cart(Resource):
                         )
     def post(self):
         data = add_to_cart.parser.parse_args()
-        Product = Product.find_by_name(data['Product_name'])
+        product = Product.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
         if product:
             cart = Cart(data['Product_name'],product.price,user.id)
@@ -223,7 +223,7 @@ class delete_from_cart(Resource):
                         )
     def post(self):
         data = delete_from_cart.parser.parse_args()
-        Product = Cart.find_by_name(data['Product_name'])
+        product = Cart.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
         if product:
             Cart.save_to_db(Product)
@@ -255,14 +255,14 @@ class buy_product(Resource):
                         )
     def post(self):
         data = buy_product.parser.parse_args()
-        Product = Product.find_by_name(data['Product_name'])
+        product = Product.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
         store = Store.find_by_name(data['store_name'])
         inventory = Inventory.find_by_name(data['store_name'])
         if product:
-            user.account_balance = int(user.account_balance)
+            user.account_balance = float(user.account_balance)
             user.account_balance = user.account_balance - Product.price
-            store.account_balance = int(store.account_balance)
+            store.account_balance = float(store.account_balance)
             store.account_balance = store.account_balance + Product.price
 
             inventory.NO_of_products = inventory.NO_of_products - 1
