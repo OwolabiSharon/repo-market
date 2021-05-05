@@ -148,10 +148,10 @@ class add_to_wishlist(Resource):
                         )
     def post(self):
         data = add_to_wishlist.parser.parse_args()
-        product = Product.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
-        if product:
-            wishlist = Wishlist(data['Product_name'],product.price,user.id)
+        wishlist_item = Product.find_by_name(data['Product_name'])
+        if wishlist_item:
+            wishlist = Wishlist(data['Product_name'],wishlist_item.price,user.id)
             Wishlist.save_to_db(wishlist)
             return{
                  "status": True,
