@@ -44,7 +44,7 @@ class register(Resource):
             'message':'user exists'
             },400
 
-        user = User(data['username'],data['email'],data['password'],'')
+        user = User(data['username'],data['email'],data['password'],'0')
 
         User.save_to_db(user)
 
@@ -111,6 +111,7 @@ class top_up(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    @jwt_required()
     def post(self):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
