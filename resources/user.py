@@ -114,7 +114,7 @@ class top_up(Resource):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
         if user:
-
+            user.account_balance = float(user.account_balance)
             user.account_balance = user.account_balance + data['ammount']
             try:
                 return {
