@@ -152,12 +152,18 @@ class add_to_wishlist(Resource):
         user = User.find_by_username(data['username'])
         wishlist_item = Product.find_by_name(data['Product_name'])
         if wishlist_item:
+            if wishlist_item.user_id == user.id:
+                return{
+                     "status": True,
+                     'message':'product is in your wishlist'
+                     },201
             wishlist = Wishlist(data['Product_name'],wishlist_item.cost,user.id)
             Wishlist.save_to_db(wishlist)
             return{
                  "status": True,
                  'message':'product added to wishlist'
                  },201
+
         return {
               'status': False,
               'message':'product not found'
