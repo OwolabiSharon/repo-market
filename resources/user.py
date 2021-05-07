@@ -44,7 +44,7 @@ class register(Resource):
             'message':'user exists'
             },400
 
-        user = User(data['username'],data['email'],data['password'],00)
+        user = User(data['username'],data['email'],data['password'],'00')
 
         User.save_to_db(user)
 
@@ -105,7 +105,7 @@ class top_up(Resource):
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('ammount',
-                        type= int,
+                        type= float,
                         required=True,
                         help="This field cannot be left blank!"
                         )
@@ -114,8 +114,9 @@ class top_up(Resource):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
         if user:
-
-            user.account_balance = (user.account_balance + data['ammount'])
+            user.account_balance = float(user.account_balance)
+            user.account_balance = user.account_balance + data['ammount']
+            User.save_to_db(user)
             try:
                 return {
                       'status': True,
@@ -304,7 +305,7 @@ class Create_store(Resource):
                   'status': False,
                   'message':'Store exists already'
             },400
-        new_store = Store(data['store_name'],data['description'],data['store_address'],00,user.id)
+        new_store = Store(data['store_name'],data['description'],data['store_address'],'00',user.id)
         Store.save_to_db(new_store)
         new_inventory = Inventory(data['store_name'],0,new_store.id)
 
