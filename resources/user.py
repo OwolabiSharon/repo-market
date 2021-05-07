@@ -118,7 +118,6 @@ class top_up(Resource):
         if user:
 
             user.account_balance = user.account_balance + data['ammount']
-            user.account_balance = str(user.account_balance)
             try:
                 return {
                       'status': True,
@@ -152,18 +151,12 @@ class add_to_wishlist(Resource):
         user = User.find_by_username(data['username'])
         wishlist_item = Product.find_by_name(data['Product_name'])
         if wishlist_item:
-        wishlist = Wishlist(data['Product_name'],wishlist_item.cost,user.id)
-        Wishlist.save_to_db(wishlist)
-        return{
-             "status": True,
-             'message':'product added to wishlist'
-             },201
-        if wishlist_item.user_id == user.id:
+            wishlist = Wishlist(data['Product_name'],wishlist_item.cost,user.id)
+            Wishlist.save_to_db(wishlist)
             return{
                  "status": True,
-                 'message':'product is in your wishlist'
+                 'message':'product added to wishlist'
                  },201
-
         return {
               'status': False,
               'message':'product not found'
@@ -269,9 +262,6 @@ class buy_product(Resource):
             store.account_balance = store.account_balance + Product.price
 
             inventory.NO_of_products = inventory.NO_of_products - 1
-
-            store.account_balance = str(store.account_balance)
-            user.account_balance = str(user.account_balance)
 
             return{
                  "status": True,
