@@ -115,7 +115,7 @@ class top_up(Resource):
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
         if user:
             user.account_balance = float(user.account_balance)
-            user.account_balance = user.account_balance + data['ammount']
+            user.account_balance = float(user.account_balance) + float(data['ammount'])
             try:
                 return {
                       'status': True,
@@ -204,7 +204,7 @@ class add_to_cart(Resource):
             Cart.save_to_db(cart)
             return{
                  "status": True,
-                 'message':'product added to wishlist'
+                 'message':'product added to cart'
                  },201
         return {
               'status': False,
@@ -258,9 +258,9 @@ class buy_product(Resource):
         if product:
             user.account_balance = float(user.account_balance)
             store.account_balance = float(store.account_balance)
-            
-            user.account_balance = user.account_balance - Product.price
-            store.account_balance = store.account_balance + Product.price
+
+            user.account_balance = user.account_balance - Product.cost
+            store.account_balance = store.account_balance + Product.cost
 
             inventory.NO_of_products = inventory.NO_of_products - 1
 
