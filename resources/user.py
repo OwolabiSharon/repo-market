@@ -256,7 +256,9 @@ class buy_product(Resource):
         store = Store.find_by_name(data['store_name'])
         inventory = Inventory.find_by_name(data['store_name'])
         if product:
-
+            user.account_balance = float(user.account_balance)
+            store.account_balance = float(store.account_balance)
+            
             user.account_balance = user.account_balance - Product.price
             store.account_balance = store.account_balance + Product.price
 
