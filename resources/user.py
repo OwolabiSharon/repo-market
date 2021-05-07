@@ -44,7 +44,7 @@ class register(Resource):
             'message':'user exists'
             },400
 
-        user = User(data['username'],data['email'],data['password'],'00')
+        user = User(data['username'],data['email'],data['password'],00)
 
         User.save_to_db(user)
 
@@ -303,7 +303,7 @@ class Create_store(Resource):
                   'status': False,
                   'message':'Store exists already'
             },400
-        new_store = Store(data['store_name'],data['description'],data['store_address'],'0',user.id)
+        new_store = Store(data['store_name'],data['description'],data['store_address'],0,user.id)
         Store.save_to_db(new_store)
         new_inventory = Inventory(data['store_name'],0,new_store.id)
 
