@@ -151,7 +151,7 @@ class add_to_wishlist(Resource):
         data = add_to_wishlist.parser.parse_args()
         user = User.find_by_username(data['username'])
         wishlist_item = Product.find_by_name(data['Product_name'])
-        if wishlist_item is not None:
+        if wishlist_item:
         wishlist = Wishlist(data['Product_name'],wishlist_item.cost,user.id)
         Wishlist.save_to_db(wishlist)
         return{
@@ -163,7 +163,7 @@ class add_to_wishlist(Resource):
                  "status": True,
                  'message':'product is in your wishlist'
                  },201
-        
+
         return {
               'status': False,
               'message':'product not found'
