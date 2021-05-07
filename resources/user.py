@@ -44,7 +44,7 @@ class register(Resource):
             'message':'user exists'
             },400
 
-        user = User(data['username'],data['email'],data['password'],'0')
+        user = User(data['username'],data['email'],data['password'],'00')
 
         User.save_to_db(user)
 
@@ -116,7 +116,7 @@ class top_up(Resource):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
         if user:
-            user.account_balance = float(user.account_balance)
+
             user.account_balance = user.account_balance + data['ammount']
             user.account_balance = str(user.account_balance)
             try:
@@ -259,9 +259,7 @@ class buy_product(Resource):
         store = Store.find_by_name(data['store_name'])
         inventory = Inventory.find_by_name(data['store_name'])
         if product:
-            user.account_balance = float(user.account_balance)
             user.account_balance = user.account_balance - Product.price
-            store.account_balance = float(store.account_balance)
             store.account_balance = store.account_balance + Product.price
 
             inventory.NO_of_products = inventory.NO_of_products - 1
