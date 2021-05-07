@@ -50,10 +50,8 @@ class register(Resource):
 
 
 
-        #notification.notify(title= "notification",message="you are succesfully registered",timeout=5)
         return {
         'status': True,
-        #'data info': user.jsonyo(),
         'data':user.json(),
         'message':'user created succesfully'
         },201
@@ -116,7 +114,7 @@ class top_up(Resource):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
         if user:
-            
+
             user.account_balance = user.account_balance + data['ammount']
             try:
                 return {
@@ -304,7 +302,7 @@ class Create_store(Resource):
                   'status': False,
                   'message':'Store exists already'
             },400
-        new_store = Store(data['store_name'],data['description'],data['store_address'],0,user.id)
+        new_store = Store(data['store_name'],data['description'],data['store_address'],'00',user.id)
         Store.save_to_db(new_store)
         new_inventory = Inventory(data['store_name'],0,new_store.id)
 
