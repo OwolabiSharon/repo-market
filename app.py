@@ -11,7 +11,7 @@ from flask_jwt_extended import JWTManager
 
 #app = Flask(__name__)
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] ='mysql://root:@#Phone123@localhost/localhost'
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql://bc1db366557c34:fc68411c@us-cdbr-east-03.cleardb.com/heroku_9c13fffe52e72e7'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = '!@#$%^&*()_+=-0987654321'
 app.config['PROPAGATE_EXCEPTIONS'] = True
