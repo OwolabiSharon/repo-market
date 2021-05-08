@@ -44,7 +44,7 @@ class register(Resource):
             'message':'user exists'
             },400
 
-        user = User(data['username'],data['email'],data['password'],'00')
+        user = User(data['username'],data['email'],data['password'],00)
 
         User.save_to_db(user)
 
@@ -109,13 +109,13 @@ class top_up(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
-    @jwt_required()
+#    @jwt_required()
     def post(self):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
         if user:
             user.account_balance = float(user.account_balance)
-            user.account_balance = float(user.account_balance) + data['ammount']
+            user.account_balance = user.account_balance + data['ammount']
             User.save_to_db(user)
             try:
                 return {
@@ -149,13 +149,21 @@ class add_to_wishlist(Resource):
         data = add_to_wishlist.parser.parse_args()
         user = User.find_by_username(data['username'])
         wishlist_item = Product.find_by_name(data['Product_name'])
+        wish = Wishlist.find_by_name(data['Product_name'])
         if wishlist_item:
-            wishlist = Wishlist(data['Product_name'],wishlist_item.cost,user.id)
-            Wishlist.save_to_db(wishlist)
-            return{
-                 "status": True,
-                 'message':'product added to wishlist'
-                 },201
+            if wish:
+                return {
+                      'status': False,
+                      'message':'product is in your wishlist'
+                },404
+
+            else:
+                wishlist = Wishlist(data['Product_name'],wishlist_item.cost,user.id)
+                Wishlist.save_to_db(wishlist)
+                return{
+                     "status": True,
+                     'message':'product has been added to  your wishlist'
+                     },201
         return {
               'status': False,
               'message':'product not found'
@@ -173,7 +181,7 @@ class delete_from_wishlist(Resource):
         data = delete_from_wishlist.parser.parse_args()
         product = Wishlist.find_by_name(data['Product_name'])
         if product:
-            Wishlist.save_to_db(product)
+            Wishlist.delete_from_db(product)
             return{
                  "status": True,
                  'message':'product removed from wishlist'
@@ -200,15 +208,23 @@ class add_to_cart(Resource):
         data = add_to_cart.parser.parse_args()
         product = Product.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
+        cart = Cart.find_by_name(data['Product_name'])
         if product:
-            cart = Cart(data['Product_name'],product.cost,user.id)
-            db.session.add(self)
-            db.session.commit()
-            
-            return{
-                 "status": True,
-                 'message':'product added to cart'
-                 },201
+            if cart:
+                return {
+                      'status': False,
+                      'message':'product is in your cart'
+                },404
+
+            else:
+                cart = Cart(data['Product_name'],product.cost,user.id)
+                db.session.add(self)
+                db.session.commit()
+
+                return{
+                     "status": True,
+                     'message':'product added to cart'
+                     },201
         return {
               'status': False,
               'message':'product not found'
@@ -225,10 +241,10 @@ class delete_from_cart(Resource):
         data = delete_from_cart.parser.parse_args()
         product = Cart.find_by_name(data['Product_name'])
         if product:
-            Cart.save_to_db(Product)
+            Cart.delete_from_db(Product)
             return{
                  "status": True,
-                 'message':'product removed from your cart'
+                 'message':'product is no longer in your cart'
                  },201
         return {
               'status': False,
@@ -300,7 +316,7 @@ class Create_store(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
-    @jwt_required()
+    #@jwt_required()
     def post(self):
         data = Create_store.parser.parse_args()
         store = Store.find_by_name(data['store_name'])
@@ -353,25 +369,43 @@ class update_products(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
-    @jwt_required()
+    #@jwt_required()
     def post(self):
         data = update_products.parser.parse_args()
 
         inventory = Inventory.find_by_name(data['store_name'])
         product = Product.find_by_name(data['Product_name'])
-        if product:
-            return{
-                 "status": False,
-                 'message':'product is already in your inventory'
-                 },400
 
+        if product:
+            if product.user_id != inventory.id:
+                #file = request.files['inputFile']
+                new_product = Product(data['Product_name'],data['description'],data['price'],data['Number_available'],inventory.id)
+
+
+                Product.save_to_db(new_product)
+                inventory.NO_of_products = inventory.NO_of_products + 1
+
+                try:
+                    return{
+                         "status": True,
+                         'data': new_product.json(),
+                         'message':'store created succesfully'
+                         },201
+                except:
+                    return {"message":"little error occured when trying to access db"}
+            elif product.user_id == inventory.id:
+                return{
+                     "status": False,
+                     'message':'product is in your inventory'
+                     },400
         else:
-            #file = request.files['inputFile']
             new_product = Product(data['Product_name'],data['description'],data['price'],data['Number_available'],inventory.id)
 
 
             Product.save_to_db(new_product)
             inventory.NO_of_products = inventory.NO_of_products + 1
+            Inventory.save_to_db(inventory)
+
 
             try:
                 return{
@@ -381,6 +415,10 @@ class update_products(Resource):
                      },201
             except:
                 return {"message":"little error occured when trying to access db"}
+
+
+
+
 
 class upload_image(Resource):
     parser = reqparse.RequestParser()

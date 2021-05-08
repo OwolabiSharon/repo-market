@@ -9,7 +9,7 @@ class User(db.Model):
     username = db.Column(db.String(110))
     email = db.Column(db.String(110))
     password = db.Column(db.String(110))
-    account_balance = db.column(db.String(110))
+    account_balance = db.Column(db.Float)
 
 
     wishlist = db.relationship('Wishlist', lazy='dynamic')
@@ -105,7 +105,7 @@ class Cart(db.Model):
 
         #self.verification_code = verification_code
 
-    
+
 
     def delete_from_db(self):
         db.session.delete(self)
@@ -130,7 +130,7 @@ class Store(db.Model):
     description = db.Column(db.String(900))
     store_address = db.Column(db.String(900))
     inventory = db.relationship('Inventory', lazy='dynamic')
-    account_balance = db.column(db.String(110))
+    account_balance = db.Column(db.String(110))
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False )
     user = db.relationship('User')#,# foreign_keys= user_id)
