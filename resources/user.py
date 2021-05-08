@@ -244,7 +244,8 @@ class delete_from_cart(Resource):
         data = delete_from_cart.parser.parse_args()
         product = Cart.find_by_name(data['Product_name'])
         if product:
-            Cart.delete_from_db(Product)
+            db.session.delete(product)
+            db.session.commit()
             return{
                  "status": True,
                  'message':'product is no longer in your cart'
@@ -276,14 +277,14 @@ class buy_product(Resource):
         data = buy_product.parser.parse_args()
         product = Product.find_by_name(data['Product_name'])
         user = User.find_by_username(data['username'])
-        store = Store.find_by_name(data['store_name'])
+        Store = Store.find_by_name(data['store_name'])
         inventory = Inventory.find_by_name(data['store_name'])
         if product:
             user.account_balance = float(user.account_balance)
-            store.account_balance = float(store.account_balance)
+            Store.account_balance = float(Store.account_balance)
 
             user.account_balance = user.account_balance - product.cost
-            store.account_balance = store.account_balance + product.cost
+            Store.account_balance = Store.account_balance + product.cost
 
             inventory.NO_of_products = inventory.NO_of_products - 1
             Inventory.save_to_db(inventory)
