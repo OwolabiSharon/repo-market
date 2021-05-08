@@ -106,6 +106,9 @@ class Cart(db.Model):
         #self.verification_code = verification_code
 
 
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
     def delete_from_db(self):
         db.session.delete(self)

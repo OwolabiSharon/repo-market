@@ -109,7 +109,7 @@ class top_up(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
-#    @jwt_required()
+    @jwt_required()
     def post(self):
         data = top_up.parser.parse_args()
         user = User.find_by_username(data['username']) and User.find_by_password(data['password'])
@@ -145,6 +145,7 @@ class add_to_wishlist(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    @jwt_required()
     def post(self):
         data = add_to_wishlist.parser.parse_args()
         user = User.find_by_username(data['username'])
@@ -177,6 +178,7 @@ class delete_from_wishlist(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    @jwt_required()
     def post(self):
         data = delete_from_wishlist.parser.parse_args()
         product = Wishlist.find_by_name(data['Product_name'])
@@ -204,6 +206,7 @@ class add_to_cart(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    @jwt_required()
     def post(self):
         data = add_to_cart.parser.parse_args()
         product = Product.find_by_name(data['Product_name'])
@@ -218,8 +221,7 @@ class add_to_cart(Resource):
 
             else:
                 cart = Cart(data['Product_name'],product.cost,user.id)
-                db.session.add(self)
-                db.session.commit()
+                Cart.save_to_db(cart)
 
                 return{
                      "status": True,
@@ -237,6 +239,7 @@ class delete_from_cart(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    @jwt_required()
     def post(self):
         data = delete_from_cart.parser.parse_args()
         product = Cart.find_by_name(data['Product_name'])
@@ -268,6 +271,7 @@ class buy_product(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    @jwt_required()
     def post(self):
         data = buy_product.parser.parse_args()
         product = Product.find_by_name(data['Product_name'])
@@ -278,8 +282,8 @@ class buy_product(Resource):
             user.account_balance = float(user.account_balance)
             store.account_balance = float(store.account_balance)
 
-            user.account_balance = user.account_balance - Product.cost
-            store.account_balance = store.account_balance + Product.cost
+            user.account_balance = user.account_balance - product.cost
+            store.account_balance = store.account_balance + product.cost
 
             inventory.NO_of_products = inventory.NO_of_products - 1
             Inventory.save_to_db(inventory)
@@ -288,7 +292,7 @@ class buy_product(Resource):
 
             return{
                  "status": True,
-                 'message':'product added to wishlist'
+                 'message':'will be shipped to you soon'
                  },201
         return {
               'status': False,
@@ -316,7 +320,7 @@ class Create_store(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
-    #@jwt_required()
+    @jwt_required()
     def post(self):
         data = Create_store.parser.parse_args()
         store = Store.find_by_name(data['store_name'])
@@ -369,7 +373,7 @@ class update_products(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
-    #@jwt_required()
+    @jwt_required()
     def post(self):
         data = update_products.parser.parse_args()
 
